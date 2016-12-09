@@ -1,8 +1,8 @@
 // Put your libraries here (#include ...)
 
-#include <WaspXBeeDM.h>
-#include <Wasp3G.h>
-#include <WaspFrame.h>
+#include "WaspXBeeDM.h"
+#include "Wasp3G.h" 
+#include "WaspFrame.h"
 
 
 //Destination MAC Addresses or broadcast mode(more packet loss)
@@ -14,7 +14,7 @@ char OWN_MAC_ADDRESS[] = "0013A200412539AB"; // can be found on radio module
 char WASPMOTE_ID[] = "node_03";
 
 //Define network address of the XBee Module
-char OWN_NETADDRESS[] = "1213";
+char OWN_NETADDRESS[] = "1234";
 
 //Personal Area Network ID
 uint8_t panID[2] = {0x12,0x34};
@@ -35,31 +35,14 @@ int answer=0;
 int status_3G;
 unsigned long time;
 
-int loopcount;
-char* loopcountstr;
-char* picture_name;
+char*str = "Picture";
+uint8_t number = 0;
+int counter = 0;
+
+#define sendFiletoMeshlium
 
 void setup() {
     // put your setup code here, to run once:
-
-}
-
-xbeeDM.ON();
-xbeeDM.ON(SOCKET0);
-
-xbeeDM.ON();
-  xbeeDM.setOwnNetAddress(OWN_NETADDRESS);//set individual XBee's Network Address
-  //val from 0-7, defines how many times network retries packet sends
-  //to ensure delivery-  has random delays included
-  xbeeDM.setMeshNetworkRetries(0x01); 
-  xbeeDM.setChannel( channel );
-  xbeeDM.setPAN( panID );
-  xbeeDM.setEncryptionMode( encryptionMode );
-  xbeeDM.setLinkKey( encryptionKey );
-  xbeeDM.writeValues();
-  
-USB.ON();
-  USB.println(F("Starting"));
 
   status_3G = _3G.ON();
   if ((status_3G == 1) || (status_3G == -3))
@@ -73,7 +56,7 @@ USB.ON();
     USB.println(F("RF circuits disabled"));
 
     // if there isn't a name the 3G module use the date and time for the picture's name
-    _3G.pictureName("");
+    _3G.pictureName("PICTURE");
 
     USB.println(F("*********************************************************************"));
     USB.println(F("Focus scketch 01. This program uses the microSD to focus the lens."));
@@ -99,12 +82,12 @@ USB.ON();
 
 
 
-void loop() {
-    // put your main code here, to run repeatedly:
+void loop() { 
 
-}
+counter++;
+USB.println(str);
+number = 0;
 
-picture_name = loopcountstr+".jpg"; 
 
  USB.ON();
   USB.OFF();
@@ -206,27 +189,15 @@ if ((status_3G == 1) || (status_3G == -3))
   }
 
 
-}
-
-loopcount=loopcount+1;
-
-loopcountstr= to_string(loopcount)
-
-}
-
-xbeeDM.send(RX_ADDRESS_GATEWAY, frame.buffer, frame.length);
-    
-    //set delay(xxxx) in ms or sleep mode (guides on site) here
-    delay(60000); //one minute delay
-
-}
-
-
-
 {
 // First, goes to the folder with the pictures
 _3G.goRoot(1);
-_3G.cd(“Pictures”);
+_3G.cd("Pictures");
 // Then, sends PICTURE1.JPG to Meshlium
-_3G.sendFiletoMeshlium(“.JPG”, “Picture”, “0013A20041253B09”);
+_3G.sendFiletoMeshlium("PICTURE1.JPG","PICT1.JPG","0013A20041253B09");
 }
+
+}
+
+//current errors include "In function 'void loop()':" and "expected unqualified-id before '(' token"
+//3G.sendFiletoMeshlium command may have been discontinued by libelium
